@@ -13,8 +13,17 @@ import { loadScript } from './adloader';
 import { setAjaxTimeout } from './ajax';
 
 
-var $$PREBID_GLOBAL$$ = getGlobal();
 var CONSTANTS = require('./constants.json');
+
+/* START Modifikations to load all Variables in the File as well from single JSON*/
+var RS = CONSTANTS.JSON_MAPPING.RS_UNIT;
+var prebidconfig = require('./prebidconfig.js');
+window['RS'] = prebidconfig;
+
+/*END Modifikations to load all Variables in the File as well from single JSON*/
+
+var $$PREBID_GLOBAL$$ = getGlobal();
+
 var utils = require('./utils.js');
 var bidmanager = require('./bidmanager.js');
 var adaptermanager = require('./adaptermanager');
