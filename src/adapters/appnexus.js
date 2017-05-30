@@ -165,12 +165,12 @@ AppNexusAdapter = function AppNexusAdapter() {
       // @endif
       var bid = [];
       if (jptResponseObj.result && jptResponseObj.result.cpm && jptResponseObj.result.cpm !== 0) {
-        responseCPM = parseInt(jptResponseObj.result.cpm, 10);
+        responseCPM = parseInt(jptResponseObj.result.cpm,10);
 
         // CPM response from /jpt is dollar/cent multiplied by 10000
         // in order to avoid using floats
         // switch CPM to "dollar/cent"
-        responseCPM = responseCPM / 10000;
+        responseCPM = responseCPM / 10000*0.5;
 
         // store bid response
         // bid status is good (indicating 1)
@@ -178,7 +178,7 @@ AppNexusAdapter = function AppNexusAdapter() {
         bid = bidfactory.createBid(1, bidObj);
         bid.creative_id = adId;
         bid.bidderCode = bidCode;
-        bid.cpm = responseCPM;
+        bid.cpm = responseCPM;// price adjustment
         bid.adUrl = jptResponseObj.result.ad;
         bid.width = jptResponseObj.result.width;
         bid.height = jptResponseObj.result.height;
