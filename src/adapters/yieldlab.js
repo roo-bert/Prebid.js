@@ -6,10 +6,10 @@ var adloader = require('../adloader');
 var YieldlabAdapter = function YieldlabAdapter() {
     var pro = (document.location.protocol === 'https:' ? 'https:' : 'http:');
     var random = Math.floor((Math.random() * 1e9) + 1);
-    var _bidderCode ="";
+    var _bidderCode ="yieldlab";
+    var bidarr = [];
     var prebaseUrl = '//ad.yieldlab.net/yp/',
         posbaseUrl = '?ts=' + random,// +'&json=true',
-        bidderCode = 'yieldlab',
         handlerPrefix = 'adYieldlabHandler_',
 
         LOG_ERROR_MESS = {
@@ -21,6 +21,15 @@ var YieldlabAdapter = function YieldlabAdapter() {
             undefBid: 'Bid is undefined',
             unitNum: 'Requested unit is '
         };
+    var alreadyinArray = function(t, p) {
+                    var s = true;
+                    for (var i = 0; i < t.length; i++) {
+                        if (String(p) == String(t[i])) {
+                            s = false;
+                        }
+                    }
+                    return s
+    };
 
     function _makeHandler(handlerName, sizesstring, placementCode, bid, querry) {
         return function(response) {
@@ -31,37 +40,38 @@ var YieldlabAdapter = function YieldlabAdapter() {
             }
             _responseProcessing(response, sizesstring, placementCode, bid, querry);
         };
-    }
+    };
 
-    function _sendBidRequest(bid) {
-        _bidderCode = bid.bidder;
+    // Collector from Bids to send just a single Request Missing. Needed a split for Creatives to send to AdServer as well.
+
+    function _sendBidRequest(bidarr) {
         var querry = "";
-        var placements = bid.params.placements;
-        if (placements.length < 1 || !placements[0].placementId) {
+        var sizesstring = "";
+        if (bidarr.length < 1) {
             // throw exception, or call utils.logError
-            utils.logError(LOG_ERROR_MESS.noUnit, bidderCode);
+            utils.logError(LOG_ERROR_MESS.noUnit, _bidderCode);
             return;
         }
-        for (var i = 0; i < placements.length; i++) {
-            var placement = placements[i];
-            if (placement) {
-                querry += placement.placementId + ",";
-            }
-        }
-        querry = querry.slice(0, querry.length - 1);
-        var sizesstring = "";
-        if (bid.sizes.length > 0) {
-            for (var i = 0; i < placements.length; i++) {
-                sizesstring += placements[i].placementId + ":" + placements[i].sizes[0] + "x" + placements[i].sizes[1] + ",";
-            }
-        }
+        else
+        {
+            for(var i = 0; i < bidarr.length; i++){
+            querry += bidarr[i].params.placements + ",";
+                var placements = bidarr[0];
+            if (placements.sizes.length > 0) {
+                for (var iii = 0; iii < placements.sizes.length; iii++) {
+                    sizesstring += placements.params.placements + ":" + placements.sizes[iii][0] + "x" + placements.sizes[iii][1] + ",";
+                    sizesstring += placements.params.placements + ":" + placements.sizes[iii][0] + "x" + placements.sizes[iii][1] + ",";
+                }
+            };
+        };
         sizesstring = sizesstring.slice(0, sizesstring.length - 1);
 
         // make handler name for request
-        var handlerName = handlerPrefix+bid.bidId;
-
-        window[handlerName] = _makeHandler(handlerName, sizesstring, bid.placementCode, bid, querry);
+        querry = querry.slice(0, querry.length - 1);
+        var handlerName = handlerPrefix;
+        window[handlerName] = _makeHandler(handlerName, sizesstring, bidarr.placementCode, bidarr, querry);
         adloader.loadScript(pro + prebaseUrl + querry + posbaseUrl , window[handlerName],);
+        }
     }
 
     /*
@@ -73,53 +83,42 @@ var YieldlabAdapter = function YieldlabAdapter() {
      "format":0
      }
      */
-    /*function parseBidResponse(bidsResponse) {
-        try {
-            return JSON.parse(bidsResponse);
-        } catch (error) {
-            utils.logError(LOG_ERROR_MESS.JSON, bidderCode);
-            return {};
-        }
-    }*/
 
     function _responseProcessing(resp, sizesstring, placementCode, bid, querry) {
 
-        var bidObject;
         if(yl.YpResult.getAll()){
         var resp = yl.YpResult.getAll();//parseBidResponse(resp);
         }
-        var placements = bid.params.placements;
         var bid = bid;
-
+        //var placements = bid.params.placements;
         // register the bid response
         if (resp) {
             var count = querry.split(",");
+            if(count.length === bid.length){
+                for (var i = 0; i < count.length; i++) {
+                    var bidObject ={};
+                    var placementCode = bid[i].placementCode;
+                    var o = count[i].toString();
+                    var obj = resp;
+                    obj.o = o;
+                    obj = obj[obj.o];
+                    if (bid[i].params.placements == obj.id) {
+                        bidObject = "";
+                        var size = "";
+                        var width = "";
+                        var height = "";
+                        size = bid[i].params.size;
 
-            for (var i = 0; i < count.length; i++) {
-                var o = count[i].toString();
-                var obj = resp;
-                obj.o = o;
-                obj = obj[obj.o];
-                bidObject = "";
-                var size = "";
-                var width = "";
-                var height = "";
-                for (var i = 0; i < placements.length; i++) {
-                    if (placements[i].placementId == obj.id) {
-                        size = placements[i].sizes[0] + "x" + placements[i].sizes[1];
-                        width = placements[i].sizes[0];
-                        height = placements[i].sizes[1];
+                        bidObject = bidfactory.createBid(1);
+                        bidObject.bidderCode = _bidderCode;
+                        bidObject.cpm = obj.price;
+                        var content = "<scr" + "ipt ipt type='text/javascript' language='JavaScript' src='"+pro+"//ad.yieldlab.net/d/" + obj.id + "/" + obj.format + "/"+size+"?ts=" + random +"'></scr" + "ipt>";
+                        bidObject.ad = content;
+                        bidObject.width = size.split("x")[0];
+                        bidObject.height = size.split("x")[1];
+                        bidmanager.addBidResponse(placementCode, bidObject);
+                        }
                     }
-                }
-                bidObject = bidfactory.createBid(1);
-                bidObject.bidderCode = _bidderCode;
-                bidObject.cpm = obj.price;
-                bidObject.cpm = Number(bidObject.cpm / 100);
-                var content = "<scr" + "ipt ipt type='text/javascript' language='JavaScript' src='"+pro+"//ad.yieldlab.net/d/" + obj.id + "/" + obj.format + "/"+size+"?ts=" + random +"'></scr" + "ipt>";
-                bidObject.ad = content;
-                bidObject.width = width;
-                bidObject.height = height;
-                bidmanager.addBidResponse(placementCode, bidObject);
                 }
             } else {
                 bidObject = _invalidBidResponse();
@@ -136,10 +135,11 @@ var YieldlabAdapter = function YieldlabAdapter() {
             var bid, bids = params.bids || [];
             for (var i = 0; i < bids.length; i++) {
                 bid = bids[i];
-                if (bid && bid.bidder === bidderCode) {
-                    _sendBidRequest(bid);
+                if (bid && bid.bidder === _bidderCode) {
+                    bidarr.push(bid);
                 }
-            }
+            };
+            _sendBidRequest(bidarr);
         };
 
     return {
