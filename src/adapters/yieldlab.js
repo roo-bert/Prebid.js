@@ -112,6 +112,8 @@ var YieldlabAdapter = function YieldlabAdapter() {
                         bidObject = bidfactory.createBid(1);
                         bidObject.bidderCode = _bidderCode;
                         bidObject.cpm = obj.price;
+                        var deal = "YLFormat:"+obj.format+" YLURL:"+obj.curl;
+                        bidObject.dealId = deal;
                         var content = "<scr" + "ipt ipt type='text/javascript' language='JavaScript' src='"+pro+"//ad.yieldlab.net/d/" + obj.id + "/" + obj.format + "/"+size+"?ts=" + random +"'></scr" + "ipt>";
                         bidObject.ad = content;
                         bidObject.width = size.split("x")[0];
