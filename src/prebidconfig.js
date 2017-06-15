@@ -33,11 +33,25 @@ googletag.cmd.push(function() {
                         bidder: 'openx',
                         params: {
                             sizes: [{
-                                size: '300x250',
-                                id: '538971715'
-                            }, {
                                 size: '300x600',
-                                id: '538971715'
+                                id: '538971715',
+                                pl: 'medrec'
+                            }, {
+                                size: '160x600',
+                                id: '538971714',
+                                pl: 'sky'
+                            }, {
+                                size: '970x250',
+                                id: '538971713',
+                                pl: 'billboard'
+                            }, {
+                                size: '728x90',
+                                id: '538971712',
+                                pl: 'leader'
+                            }, {
+                                size: '300x250',
+                                id: '538971716',
+                                pl: 'mobile'
                             }],
                             placementnameing: 'unit',
                             addStringtocall: 'delDomain:urbanmedia-d.openx.net'
@@ -48,10 +62,65 @@ googletag.cmd.push(function() {
                         params: {
                             sizes: [{
                                 size: '300x250',
-                                id: '2117509'
+                                id: '2117509',
+                                pl: 'medrec'
+                            }, {
+                                size: '300x250',
+                                id: '2136884',
+                                pl: 'medrec'
                             }, {
                                 size: '300x600',
-                                id: '2117507'
+                                id: '2136885',
+                                pl: 'medrec'
+                            }, {
+                                size: '300x600',
+                                id: '2136886',
+                                pl: 'medrec'
+                            }, {
+                                size: '300x600',
+                                id: '2136885',
+                                pl: 'sky'
+                            }, {
+                                size: '300x600',
+                                id: '2136886',
+                                pl: 'sky'
+                            }, {
+                                size: '300x600',
+                                id: '2117507',
+                                pl: 'medrec'
+                            }, {
+                                size: '300x600',
+                                id: '2117507',
+                                pl: 'sky'
+                            }, {
+                                size: '728x90',
+                                id: '2117502',
+                                pl: 'leader'
+                            }, {
+                                size: '800x250',
+                                id: '2117505',
+                                pl: 'billboard'
+                            }, {
+                                size: '160x600',
+                                id: '2117506',
+                                pl: 'sky'
+                            }, {
+                                size: '160x600',//Sidebar
+                                id: '2117508',
+                                pl: 'sky',
+                                format: 'Sidebar'
+                            }, {
+                                size: '300x250',
+                                id: '2117511',
+                                pl: 'mobile'
+                            }, {
+                                size: '300x50',
+                                id: '2117512',
+                                pl: 'mobile'
+                            }, {size: '728x90',//Wallpaper
+                                id: '2117510',
+                                pl: 'leader',
+                                fortmat: 'Wallpaper'
                             }],
                             placementnameing: 'placements',
                             addStringtocall: ''
@@ -61,11 +130,25 @@ googletag.cmd.push(function() {
                         bidder: 'criteo',
                         params: {
                             sizes: [{
-                                size: '300x250',
-                                id: '773765'
+                                size: '160x600',
+                                id: '773763',
+                                pl: 'sky'
                             }, {
                                 size: '300x600',
-                                id: '773765'
+                                id: '773765',
+                                pl: 'medrec'
+                            }, {
+                                size: '300x250',
+                                id: '773764',
+                                pl: 'mobile'
+                            }, {
+                                size: '728x90',
+                                id: '773766',
+                                pl: 'leader'
+                            }, {
+                                size: '800x250',
+                                id: '773767',
+                                pl: 'billboard'
                             }],
                             placementnameing: 'zoneId',
                             addStringtocall: ''
@@ -157,7 +240,7 @@ googletag.cmd.push(function() {
                         codes.push(a.unit);
                         codeSizes.push({
                             adcode: a.unit,
-                            sizes: a.size
+                            sizes: a.size,
                         });
                         urbanSlotInitConfig[i].headerBidderInfo = {
                             bidder: 'no bidder found for this placement(default msg)',
@@ -203,19 +286,35 @@ googletag.cmd.push(function() {
                     for (var i = 0; i < biddies.length; i++) {
                         var c = "";
                         for (var j = 0; j < urbanSlotInitConfig.length; j++) {
-                            if (biddies[i].code == urbanSlotInitConfig[j].unit) {
+                            if (biddies[i].code === urbanSlotInitConfig[j].unit) {
                                 c = urbanSlotInitConfig[j].size;
                                 var abidder = [];
                                 for (var k = 0; k < urbanbidderconfig.length; k++) {
                                     for (var l = 0; l < urbanbidderconfig[k].params.sizes.length; l++) {
-                                        if (biddies[i].size == urbanbidderconfig[k].params.sizes[l].size) {
+                                        if (biddies[i].code.indexOf(urbanbidderconfig[k].params.sizes[l].pl)>-1) {
+                                            var a = "default";
+                                            if(urbanbidderconfig[k].params.sizes[l].format){
+                                                a = urbanbidderconfig[k].params.sizes[l].format;
+                                            };
+                                            var b = "default";
+                                            if(urbanbidderconfig[k].params.addStringtocall){
+                                                b = urbanbidderconfig[k].params.addStringtocall;
+                                            };
+                                            var c = "placement";
+                                            if(urbanbidderconfig[k].params.placementnameing){
+                                                c = urbanbidderconfig[k].params.placementnameing;
+                                            };
                                             var bidderOBJ = {
                                                 'bidder': urbanbidderconfig[k].bidder,
                                                 'id': urbanbidderconfig[k].params.sizes[l].id,
                                                 'size': urbanbidderconfig[k].params.sizes[l].size,
-                                                'placementnameing': urbanbidderconfig[k].params.placementnameing,
-                                                'addStringtocall': urbanbidderconfig[k].params.addStringtocall
+                                                'format': a,
+                                                'placementnameing': c,
+                                                'addStringtocall': b
                                             };
+                                            if (pbjs.logging) {
+                                            console.log(bidderOBJ);}
+                                            if (pbjs.logging) {console.log(bidderOBJ)}
                                             abidder.push(bidderOBJ);
                                         }
                                         if (abidder.length > 0) {
@@ -237,6 +336,7 @@ googletag.cmd.push(function() {
                                 var a = urbanSlotInitConfig[ii].headerBidderInfo.bidder[ik].placementnameing;
                                 p[a] = urbanSlotInitConfig[ii].headerBidderInfo.bidder[ik].id;
                                 p.size = urbanSlotInitConfig[ii].headerBidderInfo.bidder[ik].size;
+                                p.format = urbanSlotInitConfig[ii].headerBidderInfo.bidder[ik].format;
                                 if (!s.indexOf(",") > -1 && s.indexOf(":") > -1) {
                                     var ss = s.split(":");
                                     p[ss[0]] = ss[1];

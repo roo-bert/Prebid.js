@@ -45,7 +45,7 @@ var YieldlabAdapter = function YieldlabAdapter() {
     // Collector from Bids to send just a single Request Missing. Needed a split for Creatives to send to AdServer as well.
 
     function _sendBidRequest(bidarr) {
-        var querry = "";
+        var querry = [];
         var sizesstring = "";
         if (bidarr.length < 1) {
             // throw exception, or call utils.logError
@@ -55,22 +55,23 @@ var YieldlabAdapter = function YieldlabAdapter() {
         else
         {
             for(var i = 0; i < bidarr.length; i++){
-            querry += bidarr[i].params.placements + ",";
-                var placements = bidarr[0];
-            if (placements.sizes.length > 0) {
-                for (var iii = 0; iii < placements.sizes.length; iii++) {
-                    sizesstring += placements.params.placements + ":" + placements.sizes[iii][0] + "x" + placements.sizes[iii][1] + ",";
-                    sizesstring += placements.params.placements + ":" + placements.sizes[iii][0] + "x" + placements.sizes[iii][1] + ",";
-                }
+                if(alreadyinArray(querry,bidarr[i].params.placements)){
+                    querry.push(bidarr[i].params.placements);
+                    var placements = bidarr[i];
+                    if (placements.sizes.length > 0) {
+                        for (var iii = 0; iii < placements.sizes.length; iii++) {
+                            sizesstring += placements.params.placements + ":" + placements.sizes[iii][0] + "x" + placements.sizes[iii][1] + ",";
+                        }
+                    };
+                };
             };
-        };
         sizesstring = sizesstring.slice(0, sizesstring.length - 1);
 
         // make handler name for request
-        querry = querry.slice(0, querry.length - 1);
+        var querryS = querry.toString();
         var handlerName = handlerPrefix;
         window[handlerName] = _makeHandler(handlerName, sizesstring, bidarr.placementCode, bidarr, querry);
-        adloader.loadScript(pro + prebaseUrl + querry + posbaseUrl , window[handlerName],);
+        adloader.loadScript(pro + prebaseUrl + querryS + posbaseUrl , window[handlerName],);
         }
     }
 
@@ -90,42 +91,69 @@ var YieldlabAdapter = function YieldlabAdapter() {
         var resp = yl.YpResult.getAll();//parseBidResponse(resp);
         }
         var bid = bid;
-        //var placements = bid.params.placements;
+        var callObjectPlacementCode =[];
+        var callObjectId =[];
+        var placementBids = [];
         // register the bid response
         if (resp) {
-            var count = querry.split(",");
-            if(count.length === bid.length){
-                for (var i = 0; i < count.length; i++) {
-                    var bidObject ={};
-                    var placementCode = bid[i].placementCode;
-                    var o = count[i].toString();
+            for (var i = 0; i < bid.length; i++) {
+                var bidObject ={};
+                var placementCode = bid[i].placementCode;
+                var respS = JSON.stringify(resp);
+                if(respS.indexOf(bid[i].params.placements)>-1) {
+                    var o = bid[i].params.placements;
                     var obj = resp;
                     obj.o = o;
                     obj = obj[obj.o];
-                    if (bid[i].params.placements == obj.id) {
-                        bidObject = "";
+                    if (o == obj.id) {
+                        if(alreadyinArray(callObjectPlacementCode,placementCode)){
+                            callObjectPlacementCode.push(placementCode);
+                        };
+                        bidObject = {};
                         var size = "";
                         var width = "";
                         var height = "";
+                        var Sform = "";
+                        var YLid = "";
                         size = bid[i].params.size;
 
                         bidObject = bidfactory.createBid(1);
                         bidObject.bidderCode = _bidderCode;
                         bidObject.cpm = obj.price;
-                        var deal = "YLFormat:"+obj.format+" YLURL:"+obj.curl;
+                        if(bid[i].params.format=="Wallpaper"){Sform="101"};//Wallpaper
+                        if(bid[i].params.format=="Sidebar"){Sform="119"};//Sidebar
+                        var deal = "YLFormat:"+Sform+" YLURL:"+obj.curl;
                         bidObject.dealId = deal;
-                        var content = "<scr" + "ipt ipt type='text/javascript' language='JavaScript' src='"+pro+"//ad.yieldlab.net/d/" + obj.id + "/" + obj.format + "/"+size+"?ts=" + random +"'></scr" + "ipt>";
+                        var content = "<scr" + "ipt ipt type='text/javascript' language='JavaScript' src='"+pro+"//ad.yieldlab.net/d/" + obj.id + "/2117490/"+size+"?ts=" + random +"'></scr" + "ipt>";
                         bidObject.ad = content;
                         bidObject.width = size.split("x")[0];
                         bidObject.height = size.split("x")[1];
-                        bidmanager.addBidResponse(placementCode, bidObject);
-                        }
+                        bidObject.YLid = obj.id;
+
+                        bidObject.placementCode = placementCode;
+                        if(placementBids[placementCode]){}else{placementBids[placementCode] = []}
+                        placementBids[placementCode].push(bidObject);
                     }
                 }
-            } else {
-                bidObject = _invalidBidResponse();
             }
-        };
+            for (var i = 0; i < callObjectPlacementCode.length; i++) {
+                var a = "";
+                var b = 0;
+                var c = {};
+                for (var ii = 0; ii < placementBids[callObjectPlacementCode[i]].length; ii++) {
+                    if(parseFloat(placementBids[callObjectPlacementCode[i]][ii].cpm) > parseFloat(b) && alreadyinArray(callObjectId,placementBids[callObjectPlacementCode[i]][ii].YLid)){
+                        a = placementBids[callObjectPlacementCode[i]][ii].placementCode;
+                        b = placementBids[callObjectPlacementCode[i]][ii].price;
+                        c = placementBids[callObjectPlacementCode[i]][ii];
+                        callObjectId.push(placementBids[callObjectPlacementCode[i]][ii].YLid)
+                    }
+                }
+            bidmanager.addBidResponse(a, c);
+            }
+        } else {
+            bidObject = _invalidBidResponse();
+        }
+    };
 
         function _invalidBidResponse() {
             var bidObject = bidfactory.createBid(2);
