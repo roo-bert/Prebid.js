@@ -61,6 +61,16 @@ googletag.cmd.push(function() {
                         bidder: 'yieldlab',
                         params: {
                             sizes: [{
+                                size: '160x600',//Sidebar
+                                id: '2117508',
+                                pl: 'sky',
+                                format: 'Sidebar'
+                            }, {
+                                size: '728x90',//Wallpaper
+                                id: '2117510',
+                                pl: 'leader',
+                                format: 'Wallpaper'
+                            }, {
                                 size: '300x250',
                                 id: '2117509',
                                 pl: 'medrec'
@@ -105,11 +115,6 @@ googletag.cmd.push(function() {
                                 id: '2117506',
                                 pl: 'sky'
                             }, {
-                                size: '160x600',//Sidebar
-                                id: '2117508',
-                                pl: 'sky',
-                                format: 'Sidebar'
-                            }, {
                                 size: '300x250',
                                 id: '2117511',
                                 pl: 'mobile'
@@ -117,10 +122,6 @@ googletag.cmd.push(function() {
                                 size: '300x50',
                                 id: '2117512',
                                 pl: 'mobile'
-                            }, {size: '728x90',//Wallpaper
-                                id: '2117510',
-                                pl: 'leader',
-                                fortmat: 'Wallpaper'
                             }],
                             placementnameing: 'placements',
                             addStringtocall: ''
@@ -136,6 +137,10 @@ googletag.cmd.push(function() {
                             }, {
                                 size: '300x600',
                                 id: '773765',
+                                pl: 'medrec'
+                            }, {
+                                size: '300x250',
+                                id: '791583',
                                 pl: 'medrec'
                             }, {
                                 size: '300x250',
@@ -293,6 +298,7 @@ googletag.cmd.push(function() {
                                     for (var l = 0; l < urbanbidderconfig[k].params.sizes.length; l++) {
                                         if (biddies[i].code.indexOf(urbanbidderconfig[k].params.sizes[l].pl)>-1) {
                                             var a = "default";
+                                            console.log(urbanbidderconfig[k].params.sizes)
                                             if(urbanbidderconfig[k].params.sizes[l].format){
                                                 a = urbanbidderconfig[k].params.sizes[l].format;
                                             };
@@ -312,8 +318,6 @@ googletag.cmd.push(function() {
                                                 'placementnameing': c,
                                                 'addStringtocall': b
                                             };
-                                            if (pbjs.logging) {
-                                            console.log(bidderOBJ);}
                                             if (pbjs.logging) {console.log(bidderOBJ)}
                                             abidder.push(bidderOBJ);
                                         }

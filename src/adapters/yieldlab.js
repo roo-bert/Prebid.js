@@ -119,7 +119,8 @@ var YieldlabAdapter = function YieldlabAdapter() {
 
                         bidObject = bidfactory.createBid(1);
                         bidObject.bidderCode = _bidderCode;
-                        bidObject.cpm = obj.price;
+                        bidObject.cpm = obj.price/100;
+                        if(bid[i].params.format){Sform=bid[i].params.format};
                         if(bid[i].params.format=="Wallpaper"){Sform="101"};//Wallpaper
                         if(bid[i].params.format=="Sidebar"){Sform="119"};//Sidebar
                         var deal = "YLFormat:"+Sform+" YLURL:"+obj.curl;
