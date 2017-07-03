@@ -1,14 +1,16 @@
-var utils = require('../utils.js');
-var bidfactory = require('../bidfactory.js');
-var bidmanager = require('../bidmanager.js');
-var adloader = require('../adloader');
+const bidfactory = require('src/bidfactory.js');
+const bidmanager = require('src/bidmanager.js');
+const adloader = require('src/adloader');
+const CONSTANTS = require('src/constants.json');
+const utils = require('src/utils.js');
+const adaptermanager = require('src/adaptermanager');
 
-var YieldlabAdapter = function YieldlabAdapter() {
-    var pro = (document.location.protocol === 'https:' ? 'https:' : 'http:');
-    var random = Math.floor((Math.random() * 1e9) + 1);
-    var _bidderCode ="yieldlab";
-    var bidarr = [];
-    var prebaseUrl = '//ad.yieldlab.net/yp/',
+const YieldlabAdapter = function YieldlabAdapter() {
+    const pro = (document.location.protocol === 'https:' ? 'https:' : 'http:');
+    const random = Math.floor((Math.random() * 1e9) + 1);
+    const _bidderCode ="yieldlab";
+    const bidarr = [];
+    const prebaseUrl = '//ad.yieldlab.net/yp/',
         posbaseUrl = '?ts=' + random,// +'&json=true',
         handlerPrefix = 'adYieldlabHandler_',
 
@@ -192,5 +194,6 @@ var YieldlabAdapter = function YieldlabAdapter() {
         callBids: _callBids
     };
 };
+adaptermanager.registerBidAdapter(new YieldlabAdapter, 'yieldlab');
 
 module.exports = YieldlabAdapter;
