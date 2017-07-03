@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/roo-bert/Prebid.js.git"
+    "url": "https://github.com/prebid/Prebid.js.git"
   },
   "keywords": [
     "advertising",
@@ -104,18 +104,7 @@
   },
   "dependencies": {
     "babel-plugin-transform-object-assign": "^6.22.0",
-<<<<<<< HEAD
-    "core-js": "^2.4.1"
-  },
-  "bugs": {
-    "url": "https://github.com/prebid/Prebid.js/issues"
-  },
-  "homepage": "https://github.com/prebid/Prebid.js#readme",
-  "directories": {
-    "test": "test"
-=======
     "core-js": "^2.4.1",
     "gulp-sourcemaps": "^2.6.0"
->>>>>>> 27fe1c272867207b0974bff7024c8ebd06784f6d
   }
 }
