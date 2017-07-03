@@ -11,7 +11,8 @@ googletag.cmd.push(function() {
     googletag.pubads().disableInitialLoad();
 });
 
-var urbanPreBidWrapper = function() {
+(function() {
+    var urbanPreBidWrapper = function() {
         try {
             if (pbjs.logging) {
                 console.log("try to init prebid")
@@ -29,132 +30,64 @@ var urbanPreBidWrapper = function() {
                     console.log("init prebid sucessfull");
                 }
                 var urbanbidderconfig = [{
-                        bidder: 'openx',
-                        params: {
-                            sizes: [{
-                                size: '300x600',
-                                id: '538971715',
-                                pl: 'medrec'
-                            }, {
-                                size: '160x600',
-                                id: '538971714',
-                                pl: 'sky'
-                            }, {
-                                size: '800x250',
-                                id: '538971713',
-                                pl: 'billboard'
-                            }, {
-                                size: '728x90',
-                                id: '538971712',
-                                pl: 'leader'
-                            }, {
-                                size: '300x250',
-                                id: '538971716',
-                                pl: 'mobile'
-                            }],
-                            placementnameing: 'unit',
-                            addStringtocall: 'delDomain:urbanmedia-d.openx.net'
-                        }
-                    },
-                    {
                         bidder: 'yieldlab',
                         params: {
                             sizes: [{
                                 size: '300x600',//Sidebar
-                                id: '2117508',
+                                id: '2146131',
                                 pl: 'sky',
                                 format: 'Sidebar'
                             }, {
                                 size: '728x90',//Wallpaper
-                                id: '2117510',
+                                id: '2146132',
                                 pl: 'leader',
                                 format: 'Wallpaper'
                             }, {
                                 size: '300x250',
-                                id: '2117509',
+                                id: '2146125',
                                 pl: 'medrec'
                             }, {
                                 size: '300x250',
-                                id: '2136884',
+                                id: '2146126',
                                 pl: 'medrec'
                             }, {
                                 size: '300x600',
-                                id: '2136885',
+                                id: '2146127',
                                 pl: 'medrec'
                             }, {
                                 size: '300x600',
-                                id: '2136886',
+                                id: '2146128',
                                 pl: 'medrec'
                             }, {
                                 size: '300x600',
-                                id: '2136885',
+                                id: '2146127',
                                 pl: 'sky'
                             }, {
                                 size: '300x600',
-                                id: '2136886',
-                                pl: 'sky'
-                            }, {
-                                size: '300x600',
-                                id: '2117507',
-                                pl: 'medrec'
-                            }, {
-                                size: '300x600',
-                                id: '2117507',
+                                id: '2146128',
                                 pl: 'sky'
                             }, {
                                 size: '728x90',
-                                id: '2117502',
+                                id: '2146129',
                                 pl: 'leader'
                             }, {
                                 size: '800x250',
-                                id: '2117505',
-                                pl: 'billboard'
+                                id: '2146130',
+                                pl: 'leader'
                             }, {
-                                size: '160x600',
-                                id: '2117506',
+                                size: '300x600',
+                                id: '2146124',
                                 pl: 'sky'
                             }, {
                                 size: '300x250',
-                                id: '2117511',
+                                id: '2146133',
                                 pl: 'mobile'
                             }, {
                                 size: '300x50',
-                                id: '2117512',
+                                id: '2146134',
                                 pl: 'mobile'
                             }],
                             placementnameing: 'placements',
-                            addStringtocall: ''
-                        }
-                    },
-                    {
-                        bidder: 'criteo',
-                        params: {
-                            sizes: [{
-                                size: '160x600',
-                                id: '773763',
-                                pl: 'sky'
-                            }, {
-                                size: '300x600',
-                                id: '773765',
-                                pl: 'medrec'
-                            }, {
-                                size: '300x250',
-                                id: '791583',
-                                pl: 'medrec'
-                            }, {
-                                size: '300x250',
-                                id: '773764',
-                                pl: 'mobile'
-                            }, {
-                                size: '728x90',
-                                id: '773766',
-                                pl: 'leader'
-                            }, {
-                                size: '800x250',
-                                id: '773767',
-                                pl: 'billboard'
-                            }],
-                            placementnameing: 'zoneId',
                             addStringtocall: ''
                         }
                     }
@@ -482,5 +415,6 @@ var urbanPreBidWrapper = function() {
                 }
             };
         }
-};
-urbanPreBidWrapper();
+    };
+    urbanPreBidWrapper();
+})();

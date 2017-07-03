@@ -11,7 +11,8 @@ googletag.cmd.push(function() {
     googletag.pubads().disableInitialLoad();
 });
 
-var urbanPreBidWrapper = function() {
+(function() {
+    var urbanPreBidWrapper = function() {
         try {
             if (pbjs.logging) {
                 console.log("try to init prebid")
@@ -33,23 +34,27 @@ var urbanPreBidWrapper = function() {
                         params: {
                             sizes: [{
                                 size: '300x600',
-                                id: '538971715',
+                                id: '539057691',
                                 pl: 'medrec'
                             }, {
-                                size: '160x600',
-                                id: '538971714',
-                                pl: 'sky'
+                                size: '300x600',
+                                id: '539057693',
+                                pl: 'right'
+                            }, {
+                                size: '300x600',
+                                id: '539057693',
+                                pl: 'gallery'
                             }, {
                                 size: '800x250',
-                                id: '538971713',
-                                pl: 'billboard'
+                                id: '539057690',
+                                pl: 'leader'
                             }, {
                                 size: '728x90',
-                                id: '538971712',
+                                id: '539057692',
                                 pl: 'leader'
                             }, {
                                 size: '300x250',
-                                id: '538971716',
+                                id: '539057694',
                                 pl: 'mobile'
                             }],
                             placementnameing: 'unit',
@@ -61,65 +66,77 @@ var urbanPreBidWrapper = function() {
                         params: {
                             sizes: [{
                                 size: '300x600',//Sidebar
-                                id: '2117508',
-                                pl: 'sky',
+                                id: '2146120',
+                                pl: 'right',
                                 format: 'Sidebar'
                             }, {
                                 size: '728x90',//Wallpaper
-                                id: '2117510',
+                                id: '2146121',
                                 pl: 'leader',
                                 format: 'Wallpaper'
                             }, {
                                 size: '300x250',
-                                id: '2117509',
+                                id: '2146113',
                                 pl: 'medrec'
                             }, {
                                 size: '300x250',
-                                id: '2136884',
+                                id: '2146114',
                                 pl: 'medrec'
                             }, {
                                 size: '300x600',
-                                id: '2136885',
+                                id: '2146115',
                                 pl: 'medrec'
                             }, {
                                 size: '300x600',
-                                id: '2136886',
+                                id: '2146116',
                                 pl: 'medrec'
                             }, {
                                 size: '300x600',
-                                id: '2136885',
-                                pl: 'sky'
+                                id: '2146115',
+                                pl: 'right'
                             }, {
                                 size: '300x600',
-                                id: '2136886',
-                                pl: 'sky'
+                                id: '2146116',
+                                pl: 'right'
                             }, {
                                 size: '300x600',
-                                id: '2117507',
+                                id: '2146115',
+                                pl: 'gallery'
+                            }, {
+                                size: '300x600',
+                                id: '2146116',
+                                pl: 'gallery'
+                            }, {
+                                size: '300x600',
+                                id: '2146117',
                                 pl: 'medrec'
                             }, {
                                 size: '300x600',
-                                id: '2117507',
-                                pl: 'sky'
+                                id: '2146117',
+                                pl: 'right'
                             }, {
                                 size: '728x90',
-                                id: '2117502',
+                                id: '2146118',
                                 pl: 'leader'
                             }, {
                                 size: '800x250',
-                                id: '2117505',
-                                pl: 'billboard'
+                                id: '2146119',
+                                pl: 'leader'
                             }, {
                                 size: '160x600',
-                                id: '2117506',
-                                pl: 'sky'
+                                id: '2146112',
+                                pl: 'right'
+                            }, {
+                                size: '160x600',
+                                id: '2146112',
+                                pl: 'gallery'
                             }, {
                                 size: '300x250',
-                                id: '2117511',
+                                id: '2146122',
                                 pl: 'mobile'
                             }, {
                                 size: '300x50',
-                                id: '2117512',
+                                id: '2146123',
                                 pl: 'mobile'
                             }],
                             placementnameing: 'placements',
@@ -130,13 +147,21 @@ var urbanPreBidWrapper = function() {
                         bidder: 'criteo',
                         params: {
                             sizes: [{
-                                size: '160x600',
+                                size: '300x600',
                                 id: '773763',
-                                pl: 'sky'
+                                pl: 'right'
+                            },{
+                                size: '300x600',
+                                id: '773763',
+                                pl: 'gallery'
                             }, {
                                 size: '300x600',
                                 id: '773765',
                                 pl: 'medrec'
+                            }, {
+                                size: '300x600',
+                                id: '773765',
+                                pl: 'right'
                             }, {
                                 size: '300x250',
                                 id: '791583',
@@ -152,7 +177,7 @@ var urbanPreBidWrapper = function() {
                             }, {
                                 size: '800x250',
                                 id: '773767',
-                                pl: 'billboard'
+                                pl: 'leader'
                             }],
                             placementnameing: 'zoneId',
                             addStringtocall: ''
@@ -482,5 +507,6 @@ var urbanPreBidWrapper = function() {
                 }
             };
         }
-};
-urbanPreBidWrapper();
+    };
+    urbanPreBidWrapper();
+})();

@@ -68,10 +68,25 @@ var YieldlabAdapter = function YieldlabAdapter() {
         sizesstring = sizesstring.slice(0, sizesstring.length - 1);
 
         // make handler name for request
-        var querryS = querry.toString();
-        var handlerName = handlerPrefix;
-        window[handlerName] = _makeHandler(handlerName, sizesstring, bidarr.placementCode, bidarr, querry);
-        adloader.loadScript(pro + prebaseUrl + querryS + posbaseUrl , window[handlerName],);
+            var ylsendbids = function(querryS){
+                var handlerName = handlerPrefix;
+                window[handlerName] = _makeHandler(handlerName, sizesstring, bidarr.placementCode, bidarr, querry);
+                adloader.loadScript(pro + prebaseUrl + querryS + posbaseUrl , window[handlerName],);
+            }
+            var querryS = "";
+            if(querry.length>10){
+                for(var iy = 0; iy <= querry.length/10; iy++){
+                    var querryTEMP = [];
+                    for(var iiy = 0; iiy <10; iiy++){
+                        querryTEMP.push(querry[iy*10+iiy]);
+                    }
+                    querryS = querryTEMP.toString();
+                    ylsendbids(querryS);
+                }
+            }else{
+                querryS = querry.toString();
+                ylsendbids(querryS);
+            }
         }
     }
 
@@ -121,7 +136,7 @@ var YieldlabAdapter = function YieldlabAdapter() {
                         bidObject.bidderCode = _bidderCode;
                         bidObject.cpm = obj.price/100;
                         if(bid[i].params.format){Sform=bid[i].params.format};
-                        if(bid[i].params.format=="Wallpaper"){Sform="101"};//Wallpaper
+                        if(bid[i].params.format=="Wallpaper"){Sform="101"; size = "728x600"};//Wallpaper
                         if(bid[i].params.format=="Sidebar"){Sform="119"};//Sidebar
                         var deal = "YLFormat:"+Sform+" YLURL:"+obj.curl;
                         bidObject.dealId = deal;
