@@ -44,7 +44,7 @@ const YieldlabAdapter = function YieldlabAdapter() {
         };
     };
 
-    // Collector from Bids to send just a single Request Missing. Needed a split for Creatives to send to AdServer as well.
+    // Collector from Bids to send
 
     function _sendBidRequest(bidarr) {
         var querry = [];
