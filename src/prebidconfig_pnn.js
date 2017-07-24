@@ -10,16 +10,11 @@ var urbanPreBidWrapper = function(slots,urbanid) {
             console.log(slots);
             console.log(urbanid);
         };
+        var sendAdserverRequest;
         if (slots.length>0) {
-            if (pbjs.logging) {
-                document.addEventListener('prebidloaded', function(e) {
-                    console.log("Send trigger for loaded to URBAN-JS")
-                    console.log(e);
-                }, false);
-                console.log(pbjs);
-            }
             if(pbjs.urbanbidscycle){pbjs.urbanbidscycle = pbjs.urbanbidscycle+1;urban.configQueue[0].headerbiddingcycle=urban.configQueue[0].headerbiddingcycle+1}else{pbjs.urbanbidscycle=1;urban.configQueue[0].headerbiddingcycle=1;}
             urban.configQueue[0].headerbiddingloaded = false;
+            if (pbjs.adserverRequestSent){pbjs.adserverRequestSent=false;};
             if (pbjs.logging) {
                 console.log("init prebid sucessfull");
             }
@@ -33,6 +28,10 @@ var urbanPreBidWrapper = function(slots,urbanid) {
                         }, {
                             size: '160x600',
                             id: '538971714',
+                            pl: 'sky'
+                        }, {
+                            size: '300x600',
+                            id: '539147813',
                             pl: 'sky'
                         }, {
                             size: '800x250',
@@ -362,8 +361,8 @@ var urbanPreBidWrapper = function(slots,urbanid) {
                 if (pbjs.logging) {
                     console.log("Adding AdServerrequest");
                 }
-                /*if (pbjs.adserverRequestSent) return;
-                pbjs.adserverRequestSent = true;*/
+                if (pbjs.adserverRequestSent) return;
+                pbjs.adserverRequestSent = true;
                 if (pbjs.logging) {
                     console.log(pbjs.adserverRequestSent);
                     console.log("Check for AdServersettings");
@@ -435,6 +434,12 @@ var urbanPreBidWrapper = function(slots,urbanid) {
             urbanlaunchbidder();
 
         }
+        else{
+            sendAdserverRequest();
+            if (pbjs.logging) {
+                console.log("Auction failed no slots send")
+            };
+        };
     } catch (e) {
         if (pbjs.logging) {
             console.log(e)

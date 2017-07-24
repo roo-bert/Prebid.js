@@ -1,30 +1,20 @@
 var PREBID_TIMEOUT = 5000;
-var urbanLOOP = false;
 var pbjs = pbjs || {};
 pbjs.que = pbjs.que || [];
 pbjs.logging = true;
 
-//DFP perdefinitio
-var googletag = googletag || {};
-googletag.cmd = googletag.cmd || [];
-googletag.cmd.push(function() {
-    googletag.pubads().disableInitialLoad();
-});
-
-var urbanPreBidWrapper = function() {
+var urbanPreBidWrapper = function(slots,urbanid) {
     try {
         if (pbjs.logging) {
-            console.log("try to init prebid")
+            console.log("try to init prebid");
+            console.log(slots);
+            console.log(urbanid);
         };
-        if (urban.configQueue[0].slots) {
-            if (pbjs.logging) {
-                document.addEventListener('prebidloaded', function(e) {
-                    console.log("Send trigger for loaded to URBAN-JS")
-                }, false);
-                console.log(urban.configQueue[0].slots);
-                console.log(pbjs);
-            }
+        var sendAdserverRequest;
+        if (slots.length>0) {
+            if(pbjs.urbanbidscycle){pbjs.urbanbidscycle = pbjs.urbanbidscycle+1;urban.configQueue[0].headerbiddingcycle=urban.configQueue[0].headerbiddingcycle+1}else{pbjs.urbanbidscycle=1;urban.configQueue[0].headerbiddingcycle=1;}
             urban.configQueue[0].headerbiddingloaded = false;
+            if (pbjs.adserverRequestSent){pbjs.adserverRequestSent=false;};
             if (pbjs.logging) {
                 console.log("init prebid sucessfull");
             }
@@ -95,7 +85,7 @@ var urbanPreBidWrapper = function() {
                 console.log("Bidder-Config init done");
                 console.log(urbanbidderconfig)
             };
-            var urbanSlotInitConfig = urban.configQueue[0].slots;
+            var urbanSlotInitConfig = slots;
             var sizes = []; // Array of serached sizes
             var codes = []; // Array of serached codes
             var codeSizes = []; // Array of sizes per placement
@@ -119,10 +109,6 @@ var urbanPreBidWrapper = function() {
             };
             var alreadyinArray = function(t, p) {
                 var s = true;
-                if (pbjs.logging) {
-                    console.log(t);
-                    console.log(p);
-                }
                 for (var i = 0; i < t.length; i++) {
                     if (String(p) == String(t[i])) {
                         s = false;
@@ -171,11 +157,11 @@ var urbanPreBidWrapper = function() {
 
             for (var i = 0; i < urbanSlotInitConfig.length; i++) {
                 var a = urbanSlotInitConfig[i];
-                if (a.unit && a.size) {
+                if (a.name && a.size) {
                     splitAndPush(sizes, buildsize(a.size));
-                    codes.push(a.unit);
+                    codes.push(a.name);
                     codeSizes.push({
-                        adcode: a.unit,
+                        adcode: a.name,
                         sizes: a.size,
                     });
                     urbanSlotInitConfig[i].headerBidderInfo = {
@@ -222,7 +208,7 @@ var urbanPreBidWrapper = function() {
                 for (var i = 0; i < biddies.length; i++) {
                     var c = "";
                     for (var j = 0; j < urbanSlotInitConfig.length; j++) {
-                        if (biddies[i].code === urbanSlotInitConfig[j].unit) {
+                        if (biddies[i].code === urbanSlotInitConfig[j].name) {
                             c = urbanSlotInitConfig[j].size;
                             var abidder = [];
                             for (var k = 0; k < urbanbidderconfig.length; k++) {
@@ -282,7 +268,7 @@ var urbanPreBidWrapper = function() {
                             });
                         };
                         obj = {
-                            'code': "urban-" + urbanSlotInitConfig[ii].unit,
+                            'code': "urban-" + urbanSlotInitConfig[ii].name,
                             'sizes': urbanSlotInitConfig[ii].size,
                             bids: bidsforbidder
                         };
@@ -293,11 +279,11 @@ var urbanPreBidWrapper = function() {
                 };
             };
             var callbacksender = function() {
-                var prebidloadedEvent = document.createEvent('Event');
-                prebidloadedEvent.initEvent('prebidloaded', true, true);
+                pbjs.urbanbids = urbanSlotInitConfig;
+                var prebidloadedEvent = document.createEvent('CustomEvent');
+                prebidloadedEvent.initCustomEvent('prebidloaded', true, true, urbanid);
                 document.dispatchEvent(prebidloadedEvent);
-            }
-
+            };
 
             var sendAdserverRequest = function() {
                 if (pbjs.logging) {
@@ -318,7 +304,11 @@ var urbanPreBidWrapper = function() {
                         console.log(googletag.pubads().getTargetingKeys());
                     });
                 });
-                callbacksender();
+                for (var i = 0; i < UrbanUnits.length; i++) {
+                pbjs.que.push(function() {
+                    pbjs.removeAdUnit(UrbanUnits[i].code);});
+                };
+                setTimeout(function() { callbacksender(); }, 10);
                 urban.configQueue[0].headerbiddingloaded = true;
             };
 
@@ -336,10 +326,6 @@ var urbanPreBidWrapper = function() {
                     console.log("Push Config to Prebid Que ...  DONE");
                 }
 
-                <!-- Prebid Config Section END -->
-
-                <!-- Prebid Boilerplate Section START. No Need to Edit. -->
-
                 if (pbjs.logging) {
                     console.log("Init Bids from Prebid");
                     console.log(pbjs.que);
@@ -353,7 +339,7 @@ var urbanPreBidWrapper = function() {
                                 } else {
                                     console.log("Bidding OK")
                                 }
-                            })(), bidderReady = !0, sendAdserverRequest()
+                            })(), bidderReady = !0, sendAdserverRequest(), clearTimeout(prebidtimer)
                         }
                     });
                     if (pbjs.logging) {
@@ -362,57 +348,29 @@ var urbanPreBidWrapper = function() {
                 });
                 if (pbjs.logging) {
                     console.log(pbjs.que);
+                    console.log("bids recived: ")
+                    console.log(pbjs._bidsReceived)
                 }
 
-                setTimeout(function() {
+                var prebidtimer = window.setTimeout(function() {
                     sendAdserverRequest();
                     if (pbjs.logging) {
                         console.log("Auction timed out")
-                    }
+                    };
                 }, PREBID_TIMEOUT);
             };
-
-            var bidderque = function() {
-                var i = 0;
-                if (pbjs.logging) {
-                    console.log("Setting pbjs on hold for: " + i)
-                }
-                if (!pbjs && i < 10) {
-                    i++;
-                    window.setTimeout(function() {
-                        bidderque()
-                    }, 250)
-                } else if (pbjs) {
-                    urbanlaunchbidder();
-                    if (pbjs.logging) {
-                        console.log("urbanlaunchbidder init")
-                    }
-                } else {
-                    if (pbjs.logging) {
-                        console.log("Error loading pbjs")
-                    }
-                }
-            };
-            bidderque();
+            urbanlaunchbidder();
 
         }
+        else{
+            sendAdserverRequest();
+            if (pbjs.logging) {
+                console.log("Auction failed no slots send")
+            };
+        };
     } catch (e) {
         if (pbjs.logging) {
             console.log(e)
         };
-        if (!urbanLOOP) {
-            document.addEventListener('urbanInitialized', function(e) {
-                urbanPreBidWrapper();
-            }, false);
-            urbanLOOP = true;
-            if (pbjs.logging) {
-                console.log("failed loading urban-config for Urban-JS CsallBack retry soon");
-            }
-        } else {
-            if (pbjs.logging) {
-                console.log("cancel loading prebidder");
-            }
-        };
     }
 };
-urbanPreBidWrapper();
