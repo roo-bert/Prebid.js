@@ -9,8 +9,8 @@ const YieldlabAdapter = function YieldlabAdapter() {
     const pro = (document.location.protocol === 'https:' ? 'https:' : 'http:');
     const _bidderCode ="yieldlab";
     const bidarr = [];
-    const prebaseUrl = '//ad.yieldlab.net/yp/',
-        posbaseUrl = '?ts=' + random(),// +'&json=true',
+    var prebaseUrl = '//ad.yieldlab.net/yp/',
+        posbaseUrl = '?ts=' + random(),
         handlerPrefix = 'adYieldlabHandler_',
 
         LOG_ERROR_MESS = {
