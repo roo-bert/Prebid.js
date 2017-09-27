@@ -8,9 +8,13 @@ const adaptermanager = require('src/adaptermanager');
 const YieldlabAdapter = function YieldlabAdapter() {
     const pro = (document.location.protocol === 'https:' ? 'https:' : 'http:');
     const _bidderCode ="yieldlab";
-    const bidarr = [];
+    var bidarr = [];
+    var ran = function(){
+        var r = Math.floor((Math.random() * 1e9) + 1);
+        return r
+    }
     var prebaseUrl = '//ad.yieldlab.net/yp/',
-        posbaseUrl = '?ts=' + random(),
+        posbaseUrl = '?ts=' + ran(),
         handlerPrefix = 'adYieldlabHandler_',
 
         LOG_ERROR_MESS = {
@@ -22,11 +26,6 @@ const YieldlabAdapter = function YieldlabAdapter() {
             undefBid: 'Bid is undefined',
             unitNum: 'Requested unit is '
         };
-    var random = function(){
-        var r = Math.floor((Math.random() * 1e9) + 1);
-        return r
-    }
-
     var alreadyinArray = function(t, p) {
                     var s = true;
                     for (var i = 0; i < t.length; i++) {
@@ -146,7 +145,7 @@ const YieldlabAdapter = function YieldlabAdapter() {
                         if(bid[i].params.format=="Sidebar"){Sform="119"};//Sidebar
                         var deal = "YLFormat:"+Sform+" YLURL:"+obj.curl;
                         bidObject.dealId = deal;
-                        var content = "<scr" + "ipt ipt type='text/javascript' language='JavaScript' src='"+pro+"//ad.yieldlab.net/d/" + obj.id + "/2117490/"+size+"?ts=" + random() +"'></scr" + "ipt>";
+                        var content = "<scr" + "ipt ipt type='text/javascript' language='JavaScript' src='"+pro+"//ad.yieldlab.net/d/" + obj.id + "/2117490/"+size+"?ts=" + ran() +"'></scr" + "ipt>";
                         bidObject.ad = content;
                         bidObject.width = size.split("x")[0];
                         bidObject.height = size.split("x")[1];
